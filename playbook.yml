@@ -1,0 +1,25 @@
+- name: Uruchom aplikację w Dockerze
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Zainstaluj Dockera
+      apt:
+        name: docker.io
+        state: present
+        update_cache: true
+
+    - name: Uruchom usługę Docker
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Uruchom kontener z aplikacją
+      community.docker.docker_container:
+        name: my-app
+        image: my-app
+        state: started
+        restart_policy: unless-stopped
+        ports:
+          - "5000:5000"
